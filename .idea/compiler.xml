@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="springboot03_demo01" />
         <module name="springboot02_mybatis" />
         <module name="springboot01_quickstart" />
       </profile>
@@ -15,6 +16,7 @@
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="springboot01_quickstart" options="-parameters" />
       <module name="springboot02_mybatis" options="-parameters" />
+      <module name="springboot03_demo01" options="-parameters" />
     </option>
   </component>
 </project>

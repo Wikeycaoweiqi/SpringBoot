@@ -5,6 +5,7 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/springboot01_quickstart/pom.xml" />
+        <option value="$PROJECT_DIR$/springboot02_mybatis/pom.xml" />
       </list>
     </option>
   </component>

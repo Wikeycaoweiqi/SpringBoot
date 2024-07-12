@@ -6,9 +6,12 @@ package com.wikeyspringboot.springboot03_demo01.pojo;
  * @Description:
  */
 public class Result<T> {
-    private Integer code;     // 业务状态码，例如：成功为1，失败为0
-    private String message;   // 提示信息
-    private T data;           // 响应数据，泛型参数
+    // 业务状态码，例如：成功为1，失败为0
+    private Integer code;
+    // 提示信息
+    private String message;
+    // 响应数据，泛型参数
+    private T data;
 
     // 构造函数
     public Result() {

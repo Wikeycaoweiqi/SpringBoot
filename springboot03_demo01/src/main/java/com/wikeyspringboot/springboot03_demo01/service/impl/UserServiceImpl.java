@@ -25,9 +25,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void registerUser(String username, String password) {
-        // 加密处理
-        String md5Password = MD5Util.md5(password);
-        // 保存用户
-        userMapper.saveUser(username, md5Password);
+        userMapper.saveUser(username, password);
     }
 }

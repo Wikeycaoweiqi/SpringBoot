@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * @author: wikey
  * @create: 2024-07-10 23:00
- * @Description:
+ * @Description: 用户控制器，负责处理用户注册和登录的请求
  */
 @Validated
 @RestController
@@ -27,56 +27,65 @@ import java.util.Map;
 public class UserController {
 
     @Autowired
-    UserService userService;
+    // 声明UserService的实例，用于访问用户服务
+    private UserService userService;
 
+    /**
+     * 处理用户注册请求
+     *
+     * @param username 用户名，要求5-16个非空白字符
+     * @param password 密码，要求5-16个非空白字符
+     * @return 注册结果，成功返回空结果，失败返回错误信息
+     */
     @PostMapping(value = "register")
-    public Result register(@RequestParam("username") @Pattern(regexp = "^\\S{5,16}$") String username, @RequestParam("password") @Pattern(regexp = "^\\S{5,16}$") String password) {
+    public Result register(
+            @RequestParam("username") @Pattern(regexp = "^\\S{5,16}$") String username,
+            @RequestParam("password") @Pattern(regexp = "^\\S{5,16}$") String password) {
+        // 检查用户名是否已存在
         User user = userService.findUserByUsername(username);
         if (user == null) {
-            userService.registerUser(username, password);
+            // 用户名不存在，执行注册操作，注册前对密码进行MD5加密
+            userService.registerUser(username, MD5Util.md5(password));
             return Result.success();
         } else {
-            return Result.error("username is already exists");
+            // 用户名已存在，返回错误信息
+            return Result.error("用户名已存在");
         }
     }
 
     /**
-     * 处理用户登录请求的控制器方法。
+     * 处理用户登录请求
      *
-     * @param username 用户名，通过@RequestParam绑定请求参数，使用@Pattern注解限定用户名长度和字符要求。
-     * @param password 密码，通过@RequestParam绑定请求参数，使用@Pattern注解限定密码长度和字符要求。
-     * @return 登录结果，如果登录成功则返回包含JWT令牌的Result对象，失败则返回错误信息。
+     * @param username 用户名，要求5-16个非空白字符
+     * @param password 密码，要求5-16个非空白字符
+     * @return 登录结果，成功返回包含JWT令牌的Result对象，失败返回错误信息
      */
     @PostMapping(value = "login")
     public Result login(
             @RequestParam("username") @Pattern(regexp = "^\\S{5,16}$") String username,
             @RequestParam("password") @Pattern(regexp = "^\\S{5,16}$") String password) {
-
-        // 根据用户名查询用户
+        // 根据用户名查询用户信息
         User user = userService.findUserByUsername(username);
-
-        // 如果用户不存在，返回错误信息
         if (user == null) {
-            return Result.error("username is not exists");
+            // 用户不存在，返回错误信息
+            return Result.error("用户名不存在");
         }
 
-        // 如果用户名存在，验证密码是否正确
-        // 使用MD5Util工具类对输入密码进行MD5加密，并与数据库中存储的密码进行比较
+        // 验证密码是否正确
         if (MD5Util.md5(password).equals(user.getPassword())) {
-            // 创建claims，包含JWT需要的声明
+            // 密码正确，生成JWT令牌所需claims
             Map<String, Object> claims = new HashMap<>();
-            claims.put("id", user.getId()); // 通常包含用户的唯一标识，如用户ID
-            // 注意：密码不应该包含在JWT令牌的claims中，这可能是示例代码的简化或错误
-            claims.put("password", user.getPassword()); // 这行代码在实际应用中应该被删除或替换
+            // 将用户ID作为JWT令牌的声明
+            claims.put("id", user.getId());
 
-            // 使用JWTUtil工具类生成JWT令牌
+            // 生成JWT令牌
             String token = JWTUtil.generateToken(claims);
 
             // 返回包含JWT令牌的成功结果
             return Result.success(token);
+        } else {
+            // 密码错误，返回错误信息
+            return Result.error("密码错误");
         }
-
-        // 如果密码错误，返回错误信息
-        return Result.error("password is wrong");
     }
 }

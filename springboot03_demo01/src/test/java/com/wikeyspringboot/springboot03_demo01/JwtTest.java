@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.wikeyspringboot.springboot03_demo01.utils.JWTUtil;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
@@ -20,19 +21,17 @@ public class JwtTest {
     @Test
     public void testGen() {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", 1);
-        claims.put("username", "wikey");
-        String token = JWT.create().withClaim("user", claims).withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 12)).sign(Algorithm.HMAC256("wikey"));
+        claims.put("id", 1);
+        claims.put("username", "jack123456");
+        String token = JWTUtil.generateToken(claims);
         System.out.println(token);
     }
 
     @Test
     public void testParse() {
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJJZCI6MSwidXNlcm5hbWUiOiJ3aWtleSJ9LCJleHAiOjE3MjA5OTUyNTd9.VJnmHgRpvZ3xJ2w96_xy7F6sAr0Pm4_zLn0FpED44Vs";
-        JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256("wikey")).build();
-        DecodedJWT decodedJWT = jwtVerifier.verify(token);
-        Map<String, Claim> claims = decodedJWT.getClaims();
-        Claim user = claims.get("user");
+        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxLCJ1c2VybmFtZSI6ImphY2sxMjM0NTYifSwiZXhwIjoxNzIxNDY3NTAxfQ.H-wn8urKE37dSKUKgZNMzS_HS5vs1Kx7uYORGJvpEno";
+        DecodedJWT decodedJWT = JWTUtil.verifyToken(token);
+        Claim user = decodedJWT.getClaims().get("user");
         System.out.println(user);
     }
 }

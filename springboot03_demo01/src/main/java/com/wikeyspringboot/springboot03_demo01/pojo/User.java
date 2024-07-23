@@ -1,5 +1,11 @@
 package com.wikeyspringboot.springboot03_demo01.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
 import java.sql.Timestamp;
 
 /**
@@ -8,14 +14,28 @@ import java.sql.Timestamp;
  * @Description:
  */
 public class User {
+    @NotNull
     private int id;
+
     private String username;
+
+    @JsonIgnore
     private String password;
+
+    @NotEmpty
+    @Pattern(regexp = "^[A-Za-z0-9]{1,10}$")
     private String nickname;
+
+    @NotEmpty
+    @Email
     private String email;
+
     private String userPic;
+
     private Timestamp createTime;
+
     private Timestamp updateTime;
+
 
     // Constructors
     public User() {

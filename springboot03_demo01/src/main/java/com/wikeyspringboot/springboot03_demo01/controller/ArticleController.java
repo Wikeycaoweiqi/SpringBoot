@@ -1,9 +1,12 @@
 package com.wikeyspringboot.springboot03_demo01.controller;
 
+import com.wikeyspringboot.springboot03_demo01.pojo.Article;
+import com.wikeyspringboot.springboot03_demo01.pojo.PageBean;
 import com.wikeyspringboot.springboot03_demo01.pojo.Result;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.wikeyspringboot.springboot03_demo01.service.ArticleService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author: wikey
@@ -13,8 +16,22 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/article")
 public class ArticleController {
-    @GetMapping("/list")
-    public Result list() {
-        return Result.success("all articles");
+
+    @Autowired
+    private ArticleService articleService;
+
+    @PostMapping
+    public Result add(@RequestBody @Validated Article article) {
+        articleService.add(article);
+        return Result.success();
+    }
+
+    @GetMapping
+    public Result<PageBean<Article>> list(@RequestParam Integer pageNum,
+                                          @RequestParam Integer pageSize,
+                                          @RequestParam(required = false) String categoryId,
+                                          @RequestParam(required = false) String state) {
+        PageBean<Article> pageBean = articleService.list(pageNum, pageSize, categoryId, state);
+        return Result.success(pageBean);
     }
 }

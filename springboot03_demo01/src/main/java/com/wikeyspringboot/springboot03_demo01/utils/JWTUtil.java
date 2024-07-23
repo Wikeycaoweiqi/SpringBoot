@@ -27,8 +27,9 @@ public class JWTUtil {
         Algorithm algorithm = Algorithm.HMAC256(SECRET);
         Date expiresAt = new Date(System.currentTimeMillis() + EXPIRE_TIME * 1000);
 
-        return JWT.create().withSubject((String) claims.get("subject")).withExpiresAt(expiresAt).withIssuer((String) claims.get("issuer")).withIssuedAt(new Date())
-                // 可以继续添加其他声明
+        return JWT.create()
+                .withClaim("user", claims)
+                .withExpiresAt(expiresAt)
                 .sign(algorithm);
     }
 
